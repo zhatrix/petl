@@ -77,5 +77,33 @@ def toxlsx(tbl, filename, sheet=None, encoding=None):
         ws.append(row)
     wb.save(filename)
 
+    
+def toxlsx2(tbl, filename, sheet=None, encoding=None):
+    """
+    Write a table to a new Excel .xlsx file.
+
+    """
+    import os 
+    import openpyxl
+    if encoding is None:
+        encoding = locale.getpreferredencoding()
+    """
+    if the xlsx file is exist ,judge the sheet 
+    """
+    if os.path.exists(filename):
+        wb = openpyxl.load_workbook(filename)
+        sheet_names = wb.get_sheet_names()
+        if sheet in sheet_names:
+            ws = wb.remove_sheet(wb[sheet])
+            ws = wb.create_sheet(title=sheet)
+        else:
+            ws = wb.create_sheet(title=sheet)
+    else:
+        wb = openpyxl.Workbook(optimized_write=True, encoding=encoding)
+        ws = wb.create_sheet(title=sheet)
+    for row in tbl:
+        ws.append(row)
+    wb.save(filename)
 
 Table.toxlsx = toxlsx
+Table.toxlsx2 = toxlsx2
